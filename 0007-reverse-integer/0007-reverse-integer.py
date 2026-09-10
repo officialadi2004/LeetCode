@@ -1,20 +1,18 @@
 class Solution:
     def reverse(self, x):
 
+        sign = -1 if x < 0 else 1
+        x = abs(x)
+
         result = 0
-        sign = 1
 
-        if x < 0:
-            sign = -1
-            x = -x
+        while x:
+            result = result * 10 + x % 10
+            x //= 10
 
-        while x > 0:
-            digit = x % 10
-            x = x // 10
+        result *= sign
 
-            result = result * 10 + digit
+        if result < -2147483648 or result > 2147483647:
+            return 0
 
-            if result > 2147483647:
-                return 0
-
-        return sign * result
+        return result
