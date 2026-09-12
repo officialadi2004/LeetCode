@@ -5,51 +5,65 @@ class Solution:
 
         n = len(intervals)
 
-        # Add original index
+        # (right, left, weight, original_index)
         arr = []
-        for i in range(n):
-            l, r, w = intervals[i]
+        for i, (l, r, w) in enumerate(intervals):
             arr.append((r, l, w, i))
 
-        # Sort by ending position
         arr.sort()
 
         ends = [x[0] for x in arr]
 
-        # dp[k][i] = best answer using at most k intervals
-        # from first i intervals
-        dp = [[(0, ()) for _ in range(n + 1)] for _ in range(5)]
+        # Find the last interval that ends BEFORE current interval starts
+        prev = [0] * n
 
-        for k in range(1, 5):
+        for i in range(n):
+            l = arr[i][1]
+            prev[i] = bisect_left(ends, l, 0, i)
+
+        # dp_score = maximum score
+        # dp_indices = lexicographically smallest indices for that score
+        dp_score = [0] * (n + 1)
+        dp_indices = [()] * (n + 1)
+
+        for _ in range(4):
+
+            new_score = [0] * (n + 1)
+            new_indices = [()] * (n + 1)
 
             for i in range(1, n + 1):
 
-                r, l, w, index = arr[i - 1]
+                # Don't take current interval
+                score1 = new_score[i - 1]
+                indices1 = new_indices[i - 1]
 
-                # Option 1: don't take this interval
-                best_score, best_indices = dp[k][i - 1]
+                r, l, w, idx = arr[i - 1]
 
-                # Find last interval whose end < current start
-                j = bisect_left(ends, l, 0, i - 1)
+                # Take current interval
+                j = prev[i - 1]
 
-                # Option 2: take this interval
-                old_score, old_indices = dp[k - 1][j]
+                score2 = dp_score[j] + w
 
-                new_score = old_score + w
-                new_indices = tuple(sorted(old_indices + (index,)))
+                old = dp_indices[j]
+                indices2 = tuple(sorted(old + (idx,)))
 
-                # Choose better score
-                if new_score > best_score:
-                    dp[k][i] = (new_score, new_indices)
+                if score2 > score1:
+                    new_score[i] = score2
+                    new_indices[i] = indices2
 
-                # Same score -> lexicographically smaller indices
-                elif new_score == best_score:
-                    if new_indices < best_indices:
-                        dp[k][i] = (new_score, new_indices)
-                    else:
-                        dp[k][i] = (best_score, best_indices)
+                elif score2 < score1:
+                    new_score[i] = score1
+                    new_indices[i] = indices1
 
                 else:
-                    dp[k][i] = (best_score, best_indices)
+                    if indices2 < indices1:
+                        new_score[i] = score2
+                        new_indices[i] = indices2
+                    else:
+                        new_score[i] = score1
+                        new_indices[i] = indices1
 
-        return list(dp[4][n][1])
+            dp_score = new_score
+            dp_indices = new_indices
+
+        return list(dp_indices[n])
