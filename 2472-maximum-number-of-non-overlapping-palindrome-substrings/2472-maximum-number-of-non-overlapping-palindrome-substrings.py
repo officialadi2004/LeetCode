@@ -3,33 +3,38 @@ class Solution:
 
         n = len(s)
 
-        # palindrome[i][j] = True if s[i:j+1] is palindrome
-        palindrome = [[False] * n for _ in range(n)]
-
-        # Find all palindromes
-        for i in range(n - 1, -1, -1):
-            for j in range(i, n):
-
-                if s[i] == s[j]:
-                    if j - i <= 2 or palindrome[i + 1][j - 1]:
-                        palindrome[i][j] = True
-
-        # dp[i] = maximum palindromes in first i characters
+        # dp[i] = maximum number of palindromes
+        # using first i characters
         dp = [0] * (n + 1)
 
-        for end in range(n):
+        # Palindromes ending at previous position
+        prev = bytearray(n)
 
-            # Don't use s[end] as the end of a palindrome
-            dp[end + 1] = dp[end]
+        for right in range(n):
 
-            # Try every possible starting position
-            for start in range(end - k + 1, -1, -1):
+            current = bytearray(n)
 
-                if palindrome[start][end]:
+            for left in range(right, -1, -1):
 
-                    dp[end + 1] = max(
-                        dp[end + 1],
-                        dp[start] + 1
+                # Check palindrome
+                if s[left] == s[right]:
+
+                    if right - left <= 1:
+                        current[left] = 1
+
+                    elif prev[left + 1]:
+                        current[left] = 1
+
+                # Use this palindrome if its length is >= k
+                if current[left] and right - left + 1 >= k:
+                    dp[right + 1] = max(
+                        dp[right + 1],
+                        dp[left] + 1
                     )
+
+            # We can skip s[right]
+            dp[right + 1] = max(dp[right + 1], dp[right])
+
+            prev = current
 
         return dp[n]
