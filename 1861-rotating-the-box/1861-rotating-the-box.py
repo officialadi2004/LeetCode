@@ -3,7 +3,7 @@ class Solution:
         m = len(boxGrid)
         n = len(boxGrid[0])
 
-        # Simulate gravity in each row
+        # Gravity
         for i in range(m):
             empty = n - 1
 
@@ -17,10 +17,12 @@ class Solution:
                     empty -= 1
 
         # Rotate 90 degrees clockwise
-        result = [[None] * m for _ in range(n)]
+        ans = []
 
-        for i in range(m):
-            for j in range(n):
-                result[j][m - 1 - i] = boxGrid[i][j]
+        for j in range(n):
+            row = []
+            for i in range(m - 1, -1, -1):
+                row.append(boxGrid[i][j])
+            ans.append(row)
 
-        return result
+        return ans
