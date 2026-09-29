@@ -5,37 +5,31 @@ class Solution:
 
         length = m + n - 1
 
-        # Valid parentheses string must have even length
-        if length % 2:
+        if length % 2 or grid[0][0] == ')':
             return False
 
-        # Starting cell must be '('
-        if grid[0][0] == ')':
-            return False
-
-        dp = [set() for _ in range(n)]
-        dp[0].add(1)
+        # dp[j]: possible balances represented as bits
+        dp = [0] * n
+        dp[0] = 1 << 1
 
         for i in range(m):
             for j in range(n):
                 if i == 0 and j == 0:
                     continue
 
-                value = 1 if grid[i][j] == '(' else -1
-                new = set()
+                bits = 0
 
                 if i > 0:
-                    for balance in dp[j]:
-                        nb = balance + value
-                        if nb >= 0:
-                            new.add(nb)
+                    bits |= dp[j]
 
                 if j > 0:
-                    for balance in dp[j - 1]:
-                        nb = balance + value
-                        if nb >= 0:
-                            new.add(nb)
+                    bits |= dp[j - 1]
 
-                dp[j] = new
+                if grid[i][j] == '(':
+                    bits <<= 1
+                else:
+                    bits >>= 1
 
-        return 0 in dp[n - 1]
+                dp[j] = bits
+
+        return (dp[n - 1] & 1) != 0
