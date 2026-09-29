@@ -3,29 +3,25 @@ class Solution:
         n = len(num)
         half = n // 2
 
-        left_sum = 0
-        right_sum = 0
-        left_q = 0
-        right_q = 0
+        diff = 0
+        q = 0
 
-        for i in range(half):
+        for i in range(n):
             if num[i] == '?':
-                left_q += 1
+                if i < half:
+                    q += 1
+                else:
+                    q -= 1
             else:
-                left_sum += int(num[i])
+                digit = ord(num[i]) - 48
+                if i < half:
+                    diff += digit
+                else:
+                    diff -= digit
 
-        for i in range(half, n):
-            if num[i] == '?':
-                right_q += 1
-            else:
-                right_sum += int(num[i])
-
-        # Odd number of ? -> Alice wins
-        if (left_q + right_q) % 2:
+        # Odd difference in number of '?' -> Alice wins
+        if q % 2 != 0:
             return True
 
-        diff = left_sum - right_sum
-        q_diff = right_q - left_q
-
-        # Bob can force equality only in this case
-        return diff != 9 * q_diff // 2
+        # Bob wins only if the sums can be perfectly balanced
+        return 2 * diff != -9 * q
