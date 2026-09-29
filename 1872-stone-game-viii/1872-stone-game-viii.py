@@ -1,20 +1,16 @@
 class Solution:
     def stoneGameVIII(self, stones):
-        n = len(stones)
+        total = 0
 
-        total = stones[0]
-        prefix = [0] * n
-        prefix[0] = total
-
-        for i in range(1, n):
+        for i in range(len(stones)):
             total += stones[i]
-            prefix[i] = total
+            stones[i] = total
 
-        ans = prefix[-1]
+        ans = stones[-1]
 
-        for i in range(n - 2, 0, -1):
-            value = prefix[i] - ans
-            if value > ans:
-                ans = value
+        for i in range(len(stones) - 2, 0, -1):
+            x = stones[i] - ans
+            if x > ans:
+                ans = x
 
         return ans
