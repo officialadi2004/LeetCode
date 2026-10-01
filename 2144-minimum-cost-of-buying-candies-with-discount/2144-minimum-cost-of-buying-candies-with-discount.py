@@ -2,10 +2,7 @@ class Solution:
     def minimumCost(self, cost):
         cost.sort(reverse=True)
 
-        ans = 0
+        total = sum(cost)
+        free = sum(cost[2::3])
 
-        for i in range(len(cost)):
-            if i % 3 != 2:
-                ans += cost[i]
-
-        return ans
+        return total - free
