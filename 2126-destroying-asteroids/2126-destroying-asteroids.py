@@ -2,10 +2,9 @@ class Solution:
     def asteroidsDestroyed(self, mass, asteroids):
         asteroids.sort()
 
-        for asteroid in asteroids:
-            if mass < asteroid:
+        for x in asteroids:
+            if x > mass:
                 return False
-
-            mass += asteroid
+            mass += x
 
         return True
