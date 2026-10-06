@@ -1,12 +1,11 @@
 class Solution:
     def arrayRankTransform(self, arr):
-        sorted_arr = sorted(set(arr))
-
         rank = {}
-        for i in range(len(sorted_arr)):
-            rank[sorted_arr[i]] = i + 1
+        r = 1
 
-        for i in range(len(arr)):
-            arr[i] = rank[arr[i]]
+        for num in sorted(arr):
+            if num not in rank:
+                rank[num] = r
+                r += 1
 
-        return arr
+        return [rank[num] for num in arr]
