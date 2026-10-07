@@ -7,41 +7,41 @@ class Solution:
             return a
 
         n = len(coins)
+        limit = min(coins) * k
         subsets = []
 
         for mask in range(1, 1 << n):
             value = 1
             bits = 0
-            valid = True
 
             for i in range(n):
                 if mask & (1 << i):
                     bits += 1
-                    value = value // gcd(value, coins[i]) * coins[i]
+                    g = gcd(value, coins[i])
+                    value = value // g * coins[i]
 
-                    if value > min(coins) * k:
-                        valid = False
+                    if value > limit:
                         break
 
-            if valid:
-                subsets.append((value, bits))
+            if value <= limit:
+                if bits & 1:
+                    subsets.append(value)
+                else:
+                    subsets.append(-value)
 
         def count(x):
             total = 0
 
-            for value, bits in subsets:
-                if value > x:
-                    continue
-
-                if bits % 2:
-                    total += x // value
+            for v in subsets:
+                if v > 0:
+                    total += x // v
                 else:
-                    total -= x // value
+                    total -= x // (-v)
 
             return total
 
         left = 1
-        right = min(coins) * k
+        right = limit
 
         while left < right:
             mid = (left + right) // 2
