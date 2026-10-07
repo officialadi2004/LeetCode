@@ -6,31 +6,37 @@ class Solution:
                 a, b = b, a % b
             return a
 
-        def lcm(a, b):
-            return a // gcd(a, b) * b
+        n = len(coins)
+        subsets = []
+
+        for mask in range(1, 1 << n):
+            value = 1
+            bits = 0
+            valid = True
+
+            for i in range(n):
+                if mask & (1 << i):
+                    bits += 1
+                    value = value // gcd(value, coins[i]) * coins[i]
+
+                    if value > min(coins) * k:
+                        valid = False
+                        break
+
+            if valid:
+                subsets.append((value, bits))
 
         def count(x):
             total = 0
-            n = len(coins)
 
-            for mask in range(1, 1 << n):
-                value = 1
-                bits = 0
+            for value, bits in subsets:
+                if value > x:
+                    continue
 
-                for i in range(n):
-                    if mask & (1 << i):
-                        value = lcm(value, coins[i])
-
-                        if value > x:
-                            break
-
-                        bits += 1
-
-                if value <= x:
-                    if bits % 2:
-                        total += x // value
-                    else:
-                        total -= x // value
+                if bits % 2:
+                    total += x // value
+                else:
+                    total -= x // value
 
             return total
 
