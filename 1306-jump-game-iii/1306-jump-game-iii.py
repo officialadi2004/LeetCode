@@ -1,20 +1,23 @@
 class Solution:
     def canReach(self, arr, start):
+        n = len(arr)
+        visited = [False] * n
         stack = [start]
 
         while stack:
             i = stack.pop()
 
+            if visited[i]:
+                continue
+
+            visited[i] = True
+
             if arr[i] == 0:
                 return True
 
-            if arr[i] < 0:
-                continue
-
             jump = arr[i]
-            arr[i] = -1
 
-            if i + jump < len(arr):
+            if i + jump < n:
                 stack.append(i + jump)
 
             if i - jump >= 0:
