@@ -1,15 +1,32 @@
 class Solution:
     def pivotArray(self, nums, pivot):
-        left = []
-        equal = []
-        right = []
+        n = len(nums)
+        ans = [0] * n
+        left = 0
+        equal = 0
+        right = 0
 
         for x in nums:
             if x < pivot:
-                left.append(x)
+                left += 1
             elif x == pivot:
-                equal.append(x)
+                equal += 1
             else:
-                right.append(x)
+                right += 1
 
-        return left + equal + right
+        i = left
+        j = left + equal
+        l = 0
+
+        for x in nums:
+            if x < pivot:
+                ans[l] = x
+                l += 1
+            elif x == pivot:
+                ans[i] = x
+                i += 1
+            else:
+                ans[j] = x
+                j += 1
+
+        return ans
