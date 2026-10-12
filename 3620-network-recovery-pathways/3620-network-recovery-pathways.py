@@ -6,56 +6,63 @@ class Solution:
         indegree = [0] * n
         costs = []
 
-        for u, v, cost in edges:
-            graph[u].append((v, cost))
-            indegree[v] += 1
-            costs.append(cost)
+        for u, v, w in edges:
+            if online[u] and online[v]:
+                graph[u].append((v, w))
+                indegree[v] += 1
+                costs.append(w)
 
-        # Topological order
+        if not costs:
+            return -1
+
+        # Topological sorting
         queue = []
         for i in range(n):
-            if indegree[i] == 0:
+            if online[i] and indegree[i] == 0:
                 queue.append(i)
 
         order = []
-        idx = 0
-        while idx < len(queue):
-            u = queue[idx]
-            idx += 1
+        head = 0
+
+        while head < len(queue):
+            u = queue[head]
+            head += 1
             order.append(u)
 
-            for v, cost in graph[u]:
+            for v, w in graph[u]:
                 indegree[v] -= 1
                 if indegree[v] == 0:
                     queue.append(v)
 
+        costs = sorted(set(costs))
+        INF = 10**30
+
         def can_reach(threshold):
-            INF = 10**30
             dist = [INF] * n
             dist[0] = 0
 
             for u in order:
-                if dist[u] == INF or not online[u]:
+                d = dist[u]
+                if d == INF or d > k:
                     continue
 
-                for v, cost in graph[u]:
-                    if cost >= threshold and online[v]:
-                        new_cost = dist[u] + cost
-                        if new_cost < dist[v]:
-                            dist[v] = new_cost
+                for v, w in graph[u]:
+                    if w >= threshold:
+                        nd = d + w
+                        if nd < dist[v]:
+                            dist[v] = nd
 
             return dist[n - 1] <= k
 
-        if not edges or not can_reach(0):
-            return -1
-
-        left, right = 0, max(costs)
-        ans = 0
+        left = 0
+        right = len(costs) - 1
+        ans = -1
 
         while left <= right:
             mid = (left + right) // 2
-            if can_reach(mid):
-                ans = mid
+
+            if can_reach(costs[mid]):
+                ans = costs[mid]
                 left = mid + 1
             else:
                 right = mid - 1
