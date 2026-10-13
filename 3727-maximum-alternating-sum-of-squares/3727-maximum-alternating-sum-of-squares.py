@@ -1,15 +1,22 @@
 
 class Solution:
     def maxAlternatingSum(self, nums):
-        nums.sort(key=abs)
-        n = len(nums)
-        ans = 0
-        split = n // 2
+        freq = [0] * 40001
 
-        for i, x in enumerate(nums):
-            if i < split:
-                ans -= x * x
-            else:
-                ans += x * x
+        for x in nums:
+            freq[abs(x)] += 1
+
+        n = len(nums)
+        remove = n // 2
+        ans = 0
+
+        for x in range(40001):
+            count = freq[x]
+            take = min(count, remove)
+
+            ans -= take * x * x
+            ans += (count - take) * x * x
+
+            remove -= take
 
         return ans
