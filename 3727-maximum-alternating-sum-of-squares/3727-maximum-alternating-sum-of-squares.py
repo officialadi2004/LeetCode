@@ -1,14 +1,15 @@
 
 class Solution:
     def maxAlternatingSum(self, nums):
-        nums.sort(key=lambda x: x * x)
+        nums.sort(key=abs)
         n = len(nums)
         ans = 0
+        split = n // 2
 
-        for i in range(n):
-            if i < n // 2:
-                ans -= nums[i] * nums[i]
+        for i, x in enumerate(nums):
+            if i < split:
+                ans -= x * x
             else:
-                ans += nums[i] * nums[i]
+                ans += x * x
 
         return ans
