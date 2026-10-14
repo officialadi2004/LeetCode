@@ -1,38 +1,27 @@
 
 class Solution:
     def maxBuilding(self, n, restrictions):
-        restrictions = restrictions + [[1, 0]]
-        restrictions.sort()
+        r = [[1, 0]] + [x[:] for x in restrictions]
+        r.sort()
 
-        m = len(restrictions)
+        if r[-1][0] != n:
+            r.append([n, n - 1])
 
-        # Propagate limits from left to right
+        m = len(r)
+
         for i in range(1, m):
-            dist = restrictions[i][0] - restrictions[i - 1][0]
-            restrictions[i][1] = min(
-                restrictions[i][1],
-                restrictions[i - 1][1] + dist
-            )
+            d = r[i][0] - r[i - 1][0]
+            r[i][1] = min(r[i][1], r[i - 1][1] + d)
 
-        # Propagate limits from right to left
         for i in range(m - 2, -1, -1):
-            dist = restrictions[i + 1][0] - restrictions[i][0]
-            restrictions[i][1] = min(
-                restrictions[i][1],
-                restrictions[i + 1][1] + dist
-            )
+            d = r[i + 1][0] - r[i][0]
+            r[i][1] = min(r[i][1], r[i + 1][1] + d)
 
         ans = 0
-
         for i in range(1, m):
-            left_id, left_h = restrictions[i - 1]
-            right_id, right_h = restrictions[i]
-
-            dist = right_id - left_id
-            peak = (left_h + right_h + dist) // 2
-            ans = max(ans, peak)
-
-        last_id, last_h = restrictions[-1]
-        ans = max(ans, last_h + n - last_id)
+            x1, h1 = r[i - 1]
+            x2, h2 = r[i]
+            d = x2 - x1
+            ans = max(ans, (h1 + h2 + d) // 2)
 
         return ans
