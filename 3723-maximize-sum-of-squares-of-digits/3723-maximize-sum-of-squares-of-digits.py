@@ -4,14 +4,10 @@ class Solution:
         if sum > 9 * num:
             return ""
 
-        ans = []
+        nines, rem = divmod(sum, 9)
+        ans = '9' * nines
 
-        while sum >= 9:
-            ans.append('9')
-            sum -= 9
+        if rem:
+            ans += str(rem)
 
-        if sum > 0:
-            ans.append(str(sum))
-
-        ans.extend('0' * (num - len(ans)))
-        return ''.join(ans)
+        return ans + '0' * (num - len(ans))
