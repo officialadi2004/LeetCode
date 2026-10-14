@@ -12,11 +12,9 @@ class Solution:
         for i in range(1, m):
             d = r[i][0] - r[i - 1][0]
             r[i][1] = min(r[i][1], r[i - 1][1] + d)
-
         for i in range(m - 2, -1, -1):
             d = r[i + 1][0] - r[i][0]
             r[i][1] = min(r[i][1], r[i + 1][1] + d)
-
         ans = 0
         for i in range(1, m):
             x1, h1 = r[i - 1]
