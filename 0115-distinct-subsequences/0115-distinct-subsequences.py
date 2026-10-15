@@ -7,7 +7,7 @@ class Solution:
 
         for ch in s:
             for j in range(n - 1, -1, -1):
-                if ch == t[j]:
+                if t[j] == ch:
                     dp[j + 1] += dp[j]
 
         return dp[n]
