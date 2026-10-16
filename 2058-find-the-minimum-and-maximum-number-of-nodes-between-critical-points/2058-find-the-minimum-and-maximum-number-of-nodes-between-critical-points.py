@@ -3,27 +3,25 @@ class Solution:
     def nodesBetweenCriticalPoints(self, head):
         prev = head
         curr = head.next
-        index = 1
-        first = -1
-        last = -1
+        first = last = -1
         min_dist = float('inf')
+        i = 1
 
         while curr.next:
-            if (curr.val > prev.val and curr.val > curr.next.val) or \
-               (curr.val < prev.val and curr.val < curr.next.val):
+            a, b, c = prev.val, curr.val, curr.next.val
 
+            if (b - a) * (b - c) > 0:
                 if first == -1:
-                    first = index
+                    first = i
                 else:
-                    min_dist = min(min_dist, index - last)
-
-                last = index
+                    min_dist = min(min_dist, i - last)
+                last = i
 
             prev = curr
             curr = curr.next
-            index += 1
+            i += 1
 
-        if first == -1 or first == last:
+        if first == last:
             return [-1, -1]
 
         return [min_dist, last - first]
