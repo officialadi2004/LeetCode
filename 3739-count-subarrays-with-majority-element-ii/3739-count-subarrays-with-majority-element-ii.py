@@ -1,29 +1,25 @@
 class Solution:
     def countMajoritySubarrays(self, nums, target):
         n = len(nums)
-        offset = n + 2
-        bit = [0] * (2 * n + 5)
+        a = [0] * (n + 1)
 
-        def update(i):
-            while i < len(bit):
-                bit[i] += 1
-                i += i & -i
+        for i, x in enumerate(nums):
+            a[i + 1] = a[i] + (1 if x == target else -1)
 
-        def query(i):
-            s = 0
-            while i > 0:
-                s += bit[i]
-                i -= i & -i
-            return s
+        def solve(l, r):
+            if r - l <= 1:
+                return 0
 
-        prefix = 0
-        ans = 0
-        update(offset)
+            m = (l + r) // 2
+            ans = solve(l, m) + solve(m, r)
 
-        for x in nums:
-            prefix += 1 if x == target else -1
-            idx = prefix + offset
-            ans += query(idx - 1)
-            update(idx)
+            j = m
+            for i in range(l, m):
+                while j < r and a[j] <= a[i]:
+                    j += 1
+                ans += r - j
 
-        return ans
+            a[l:r] = sorted(a[l:r])
+            return ans
+
+        return solve(0, n + 1)
