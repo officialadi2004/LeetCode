@@ -1,16 +1,15 @@
 class Solution:
     def earliestFinishTime(self, landStartTime, landDuration, waterStartTime, waterDuration):
-        ans = float('inf')
+        land_first = min(
+            max(s + d, ws) + wd
+            for s, d in zip(landStartTime, landDuration)
+            for ws, wd in zip(waterStartTime, waterDuration)
+        )
 
-        for i in range(len(landStartTime)):
-            land_end = landStartTime[i] + landDuration[i]
+        water_first = min(
+            max(ws + wd, s) + d
+            for ws, wd in zip(waterStartTime, waterDuration)
+            for s, d in zip(landStartTime, landDuration)
+        )
 
-            for j in range(len(waterStartTime)):
-                water_end = max(land_end, waterStartTime[j]) + waterDuration[j]
-                ans = min(ans, water_end)
-
-                water_first_end = waterStartTime[j] + waterDuration[j]
-                land_end2 = max(water_first_end, landStartTime[i]) + landDuration[i]
-                ans = min(ans, land_end2)
-
-        return ans
+        return min(land_first, water_first)
