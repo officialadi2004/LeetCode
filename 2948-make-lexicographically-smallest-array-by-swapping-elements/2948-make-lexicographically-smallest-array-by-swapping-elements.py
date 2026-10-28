@@ -1,10 +1,9 @@
 
 class Solution:
     def lexicographicallySmallestArray(self, nums, limit):
+        arr = sorted((v, i) for i, v in enumerate(nums))
+        ans = [0] * len(nums)
         n = len(nums)
-        arr = sorted((value, i) for i, value in enumerate(nums))
-        ans = [0] * n
-
         i = 0
 
         while i < n:
@@ -14,10 +13,8 @@ class Solution:
                 j += 1
 
             indices = sorted(arr[k][1] for k in range(i, j))
-            values = [arr[k][0] for k in range(i, j)]
-
-            for idx, value in zip(indices, values):
-                ans[idx] = value
+            for k, idx in enumerate(indices):
+                ans[idx] = arr[i + k][0]
 
             i = j
 
