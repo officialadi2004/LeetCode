@@ -2,10 +2,12 @@
 class Solution:
     def smallestNumber(self, n, t):
         while True:
+            x = n
             product = 1
 
-            for digit in str(n):
-                product *= int(digit)
+            while x > 0:
+                product *= x % 10
+                x //= 10
 
             if product % t == 0:
                 return n
