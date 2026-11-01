@@ -1,10 +1,10 @@
 class Solution:
     def largestAltitude(self, gain):
-        altitude = 0
-        highest = 0
+        curr = highest = 0
 
-        for g in gain:
-            altitude += g
-            highest = max(highest, altitude)
+        for x in gain:
+            curr += x
+            if curr > highest:
+                highest = curr
 
         return highest
