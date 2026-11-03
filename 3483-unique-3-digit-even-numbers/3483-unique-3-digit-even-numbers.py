@@ -1,18 +1,12 @@
-from collections import Counter
+from itertools import permutations
 
 class Solution(object):
     def totalNumbers(self, digits):
-        available = Counter(digits)
-        count = 0
+        seen = set()
         
-        for num in range(100, 1000, 2):
-            d1 = num // 100
-            d2 = (num // 10) % 10
-            d3 = num % 10
-            
-            req = Counter([d1, d2, d3])
-            
-            if all(available[d] >= req[d] for d in req):
-                count += 1
+        for d1, d2, d3 in permutations(digits, 3):
+            # Must not have a leading zero, and must be even
+            if d1 != 0 and d3 % 2 == 0:
+                seen.add(d1 * 100 + d2 * 10 + d3)
                 
-        return count
+        return len(seen)
