@@ -1,17 +1,7 @@
+from operator import xor
+
 class Solution(object):
     def longestSubsequence(self, nums):
-        total_xor = 0
-        has_nonzero = False
-        
-        for x in nums:
-            total_xor ^= x
-            if x != 0:
-                has_nonzero = True
-                
-        if not has_nonzero:
+        if not any(nums):
             return 0
-            
-        if total_xor != 0:
-            return len(nums)
-            
-        return len(nums) - 1
+        return len(nums) if reduce(xor, nums) != 0 else len(nums) - 1
