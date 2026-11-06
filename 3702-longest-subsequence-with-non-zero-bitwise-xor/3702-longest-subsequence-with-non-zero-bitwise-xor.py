@@ -1,18 +1,17 @@
-class Solution:
+class Solution(object):
     def longestSubsequence(self, nums):
-        total = 0
+        total_xor = 0
         has_nonzero = False
-        n = len(nums)
-
+        
         for x in nums:
-            total ^= x
+            total_xor ^= x
             if x != 0:
                 has_nonzero = True
-
-        if total != 0:
-            return n
-
+                
         if not has_nonzero:
             return 0
-
-        return n - 1
+            
+        if total_xor != 0:
+            return len(nums)
+            
+        return len(nums) - 1
