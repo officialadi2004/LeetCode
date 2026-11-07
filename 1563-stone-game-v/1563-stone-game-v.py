@@ -1,72 +1,73 @@
-class Solution:
+class Solution(object):
     def stoneGameV(self, stoneValue):
         n = len(stoneValue)
+        if n <= 1:
+            return 0
 
-        prefix = [0] * (n + 1)
+        pref = [0] * (n + 1)
         for i in range(n):
-            prefix[i + 1] = prefix[i] + stoneValue[i]
+            pref[i + 1] = pref[i] + stoneValue[i]
 
         dp = [[0] * n for _ in range(n)]
-
-        # leftBest[i][j] =
-        # max(dp[i][k] + sum(i..k)) for i <= k <= j
-        leftBest = [[0] * n for _ in range(n)]
-
-        # rightBest[i][j] =
-        # max(dp[k][j] + sum(k..j)) for i <= k <= j
-        rightBest = [[0] * n for _ in range(n)]
+        # max_l[i][j] = max_{i <= k <= j} (dp[i][k] + (pref[k+1] - pref[i]))
+        max_l = [[0] * n for _ in range(n)]
+        # max_r[i][j] = max_{i <= k <= j} (dp[k][j] + (pref[j+1] - pref[k]))
+        max_r = [[0] * n for _ in range(n)]
 
         for i in range(n):
-            leftBest[i][i] = stoneValue[i]
-            rightBest[i][i] = stoneValue[i]
+            max_l[i][i] = stoneValue[i]
+            max_r[i][i] = stoneValue[i]
 
-        # Process from bottom to top
-        for i in range(n - 2, -1, -1):
-            p = i - 1
+        for length in range(2, n + 1):
+            mid = 0
+            for i in range(n - length + 1):
+                j = i + length - 1
+                if mid < i:
+                    mid = i
 
-            for j in range(i + 1, n):
-                total = prefix[j + 1] - prefix[i]
+                total = pref[j + 1] - pref[i]
 
-                # Largest split p where leftSum <= rightSum
-                while p + 1 < j:
-                    left = prefix[p + 2] - prefix[i]
-
-                    if left * 2 <= total:
-                        p += 1
-                    else:
-                        break
+                # Advance mid to the largest split point where left_sum <= right_sum
+                while mid < j and (pref[mid + 1] - pref[i]) * 2 <= total:
+                    mid += 1
 
                 best = 0
 
-                # Splits where LEFT side is smaller
-                if p >= i:
-                    best = leftBest[i][p]
+                # 1. Splits with left_sum < right_sum: k in [i, mid - 1]
+                # If left_sum == right_sum at mid - 1, handle separately
+                k_limit = mid - 1
+                if k_limit >= i and (pref[k_limit + 1] - pref[i]) * 2 == total:
+                    # Equal sums at k_limit
+                    left_res = dp[i][k_limit] + (pref[k_limit + 1] - pref[i])
+                    right_res = dp[k_limit + 1][j] + (pref[j + 1] - pref[k_limit + 1])
+                    cand = max(left_res, right_res)
+                    if cand > best:
+                        best = cand
+                    k_limit -= 1
 
-                # Check whether split p has equal sums
-                equal = False
-                if p >= i:
-                    left = prefix[p + 1] - prefix[i]
-                    equal = (left * 2 == total)
+                if k_limit >= i:
+                    cand = max_l[i][k_limit]
+                    if cand > best:
+                        best = cand
 
-                if equal:
-                    # For equal sums, Alice can choose either side
-                    if p + 1 <= j:
-                        best = max(best, rightBest[p + 1][j])
-                else:
-                    # For splits after p, RIGHT side is smaller
-                    if p + 2 <= j:
-                        best = max(best, rightBest[p + 2][j])
+                # 2. Splits with left_sum > right_sum: k in [mid, j - 1]
+                # If left_sum == right_sum at mid, handle separately
+                k_start = mid
+                if k_start < j and (pref[k_start + 1] - pref[i]) * 2 == total:
+                    left_res = dp[i][k_start] + (pref[k_start + 1] - pref[i])
+                    right_res = dp[k_start + 1][j] + (pref[j + 1] - pref[k_start + 1])
+                    cand = max(left_res, right_res)
+                    if cand > best:
+                        best = cand
+                    k_start += 1
+
+                if k_start + 1 <= j:
+                    cand = max_r[k_start + 1][j]
+                    if cand > best:
+                        best = cand
 
                 dp[i][j] = best
-
-                leftBest[i][j] = max(
-                    leftBest[i][j - 1],
-                    dp[i][j] + total
-                )
-
-                rightBest[i][j] = max(
-                    rightBest[i + 1][j],
-                    dp[i][j] + total
-                )
+                max_l[i][j] = max(max_l[i][j - 1], best + total)
+                max_r[i][j] = max(max_r[i + 1][j], best + total)
 
         return dp[0][n - 1]
