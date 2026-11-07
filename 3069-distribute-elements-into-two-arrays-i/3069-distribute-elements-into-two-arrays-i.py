@@ -1,12 +1,12 @@
-class Solution:
+class Solution(object):
     def resultArray(self, nums):
         arr1 = [nums[0]]
         arr2 = [nums[1]]
-
-        for i in range(2, len(nums)):
+        
+        for x in nums[2:]:
             if arr1[-1] > arr2[-1]:
-                arr1.append(nums[i])
+                arr1.append(x)
             else:
-                arr2.append(nums[i])
-
+                arr2.append(x)
+                
         return arr1 + arr2
