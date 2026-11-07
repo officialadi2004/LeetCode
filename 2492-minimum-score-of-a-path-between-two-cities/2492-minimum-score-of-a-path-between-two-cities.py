@@ -1,26 +1,27 @@
-from collections import deque
-
 class Solution(object):
     def minScore(self, n, roads):
-        graph = [[] for _ in range(n + 1)]
+        parent = list(range(n + 1))
+        
+        def find(i):
+            path = []
+            while parent[i] != i:
+                path.append(i)
+                i = parent[i]
+            for node in path:
+                parent[node] = i
+            return i
+
+        for u, v, _ in roads:
+            root_u = find(u)
+            root_v = find(v)
+            if root_u != root_v:
+                parent[root_u] = root_v
+
+        target_root = find(1)
+        min_dist = float('inf')
+
         for u, v, d in roads:
-            graph[u].append((v, d))
-            graph[v].append((u, d))
-            
-        visited = [False] * (n + 1)
-        visited[1] = True
-        
-        queue = deque([1])
-        min_score = float('inf')
-        
-        while queue:
-            curr = queue.popleft()
-            
-            for neighbor, distance in graph[curr]:
-                if distance < min_score:
-                    min_score = distance
-                if not visited[neighbor]:
-                    visited[neighbor] = True
-                    queue.append(neighbor)
-                    
-        return min_score
+            if find(u) == target_root and d < min_dist:
+                min_dist = d
+
+        return min_dist
