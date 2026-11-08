@@ -1,3 +1,3 @@
 class Solution(object):
     def countCommas(self, n):
-        return n - 999 if n >= 1000 else 0
+        return max(0, n - 999)
