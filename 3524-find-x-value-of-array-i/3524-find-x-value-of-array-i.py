@@ -1,30 +1,23 @@
-class Solution:
+class Solution(object):
     def resultArray(self, nums, k):
-
         ans = [0] * k
-
-        # dp[r] = number of subarrays ending at previous position
-        # whose product % k == r
-        dp = [0] * k
-
-        for num in nums:
-
-            x = num % k
-            new_dp = [0] * k
-
-            # Start a new subarray with just this number
-            new_dp[x] += 1
-
-            # Extend all previous subarrays
+        curr_dp = [0] * k
+        
+        for val in nums:
+            rem = val % k
+            next_dp = [0] * k
+            # Single-element subarray starting and ending at current index
+            next_dp[rem] = 1
+            
+            # Extend previous subarrays
             for r in range(k):
-                if dp[r] > 0:
-                    new_r = (r * x) % k
-                    new_dp[new_r] += dp[r]
-
-            # Add all subarrays ending here
+                cnt = curr_dp[r]
+                if cnt:
+                    next_dp[(r * rem) % k] += cnt
+                    
             for r in range(k):
-                ans[r] += new_dp[r]
-
-            dp = new_dp
-
+                ans[r] += next_dp[r]
+                
+            curr_dp = next_dp
+            
         return ans
