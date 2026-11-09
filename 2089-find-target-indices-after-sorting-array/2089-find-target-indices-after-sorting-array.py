@@ -1,5 +1,8 @@
-class Solution:
+class Solution(object):
     def targetIndices(self, nums, target):
-        start = sum(x < target for x in nums)
-        count = sum(x == target for x in nums)
-        return list(range(start, start + count))
+        nums.sort()
+        try:
+            start = nums.index(target)
+            return list(range(start, start + nums.count(target)))
+        except ValueError:
+            return []
