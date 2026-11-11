@@ -1,15 +1,14 @@
-class Solution:
+class Solution(object):
     def sequentialDigits(self, low, high):
-        ans = []
-
+        digits = "123456789"
+        res = []
+        
         for length in range(2, 10):
-            for start in range(1, 11 - length):
-                num = 0
-
-                for digit in range(start, start + length):
-                    num = num * 10 + digit
-
-                if low <= num <= high:
-                    ans.append(num)
-
-        return ans
+            for start in range(10 - length):
+                val = int(digits[start : start + length])
+                if low <= val <= high:
+                    res.append(val)
+                elif val > high:
+                    return res
+                    
+        return res
