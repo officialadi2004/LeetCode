@@ -1,8 +1,9 @@
 class Solution(object):
     def targetIndices(self, nums, target):
-        nums.sort()
-        try:
-            start = nums.index(target)
-            return list(range(start, start + nums.count(target)))
-        except ValueError:
-            return []
+        less = equal = 0
+        for x in nums:
+            if x < target:
+                less += 1
+            elif x == target:
+                equal += 1
+        return list(range(less, less + equal))
