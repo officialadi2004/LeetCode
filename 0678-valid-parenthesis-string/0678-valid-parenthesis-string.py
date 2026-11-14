@@ -1,20 +1,21 @@
 class Solution(object):
     def checkValidString(self, s):
-        low = high = 0
-        
-        for ch in s:
-            if ch == '(':
-                low += 1
-                high += 1
-            elif ch == ')':
-                if low > 0:
-                    low -= 1
-                high -= 1
-                if high < 0:
+        bal = 0
+        for c in s:
+            if c == ')':
+                bal -= 1
+                if bal < 0:
                     return False
             else:
-                if low > 0:
-                    low -= 1
-                high += 1
-                
-        return low == 0
+                bal += 1
+
+        bal = 0
+        for c in reversed(s):
+            if c == '(':
+                bal -= 1
+                if bal < 0:
+                    return False
+            else:
+                bal += 1
+
+        return True
