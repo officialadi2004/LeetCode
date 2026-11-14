@@ -1,35 +1,39 @@
-
-class Solution:
+class Solution(object):
     def sumAndMultiply(self, s, queries):
-        MOD = 10**9 + 7
-        n = len(s)
-
-        prefix_num = [0] * (n + 1)
-        prefix_sum = [0] * (n + 1)
-        prefix_count = [0] * (n + 1)
-
+        MOD = 1000000007
+        m = len(s)
+        
+        cnt = [0] * (m + 1)
+        dig_sum = [0] * (m + 1)
+        val = [0] * (m + 1)
+        pow10 = [1] * (m + 1)
+        
+        c = 0
+        ds = 0
+        v = 0
+        p = 1
+        
         for i, ch in enumerate(s):
             d = ord(ch) - 48
-            prefix_num[i + 1] = prefix_num[i]
-            prefix_sum[i + 1] = prefix_sum[i] + d
-            prefix_count[i + 1] = prefix_count[i]
-
             if d:
-                prefix_num[i + 1] = (prefix_num[i] * 10 + d) % MOD
-                prefix_count[i + 1] += 1
-
+                c += 1
+                ds += d
+                v = (v * 10 + d) % MOD
+            p = (p * 10) % MOD
+            cnt[i + 1] = c
+            dig_sum[i + 1] = ds
+            val[i + 1] = v
+            pow10[i + 1] = p
+            
         ans = []
+        append = ans.append
         for l, r in queries:
-            count = prefix_count[r + 1] - prefix_count[l]
-            digit_sum = prefix_sum[r + 1] - prefix_sum[l]
-
-            if count == 0:
-                ans.append(0)
-                continue
-
-            x = (prefix_num[r + 1] -
-                 prefix_num[l] * pow(10, count, MOD)) % MOD
-
-            ans.append(x * digit_sum % MOD)
-
+            r1 = r + 1
+            k = cnt[r1] - cnt[l]
+            if k == 0:
+                append(0)
+            else:
+                x = (val[r1] - val[l] * pow10[k]) % MOD
+                append((x * (dig_sum[r1] - dig_sum[l])) % MOD)
+                
         return ans
