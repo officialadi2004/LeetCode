@@ -1,4 +1,9 @@
-class Solution:
+class Solution(object):
     def findMissingElements(self, nums):
-        seen = set(nums)
-        return [x for x in range(min(nums), max(nums) + 1) if x not in seen]
+        nums.sort()
+        ans = []
+        extend = ans.extend
+        for i in xrange(1, len(nums)):
+            if nums[i] > nums[i - 1] + 1:
+                extend(xrange(nums[i - 1] + 1, nums[i]))
+        return ans
