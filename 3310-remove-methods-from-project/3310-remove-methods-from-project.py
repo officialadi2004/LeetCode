@@ -1,6 +1,5 @@
 class Solution(object):
     def remainingMethods(self, n, k, invocations):
-        # 1. Flat linked-list graph (avoids allocating n separate adjacency lists)
         m = len(invocations)
         head = [-1] * n
         to = [0] * m
@@ -11,7 +10,6 @@ class Solution(object):
             nxt[idx] = head[u]
             head[u] = idx
             
-        # 2. Iterative DFS from k using 1-byte-per-node bytearray
         suspicious = bytearray(n)
         suspicious[k] = 1
         stack = [k]
@@ -26,7 +24,7 @@ class Solution(object):
                     stack.append(v)
                 e = nxt[e]
                 
-        # 3. Check for any incoming edge from a non-suspicious node into a suspicious node
+        
         for u, v in invocations:
             if not suspicious[u] and suspicious[v]:
                 return list(xrange(n))
