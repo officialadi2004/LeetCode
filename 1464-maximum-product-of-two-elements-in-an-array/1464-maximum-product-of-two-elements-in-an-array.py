@@ -1,12 +1,11 @@
-
-class Solution:
+class Solution(object):
     def maxProduct(self, nums):
-        a = b = 0
-
+        max1 = 0
+        max2 = 0
         for x in nums:
-            if x > a:
-                a, b = x, a
-            elif x > b:
-                b = x
-
-        return (a - 1) * (b - 1)
+            if x > max1:
+                max2 = max1
+                max1 = x
+            elif x > max2:
+                max2 = x
+        return (max1 - 1) * (max2 - 1)
