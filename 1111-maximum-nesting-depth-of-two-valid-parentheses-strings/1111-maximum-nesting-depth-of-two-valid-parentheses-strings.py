@@ -1,14 +1,12 @@
-class Solution:
+class Solution(object):
     def maxDepthAfterSplit(self, seq):
-        ans = []
-        depth = 0
-
-        for ch in seq:
+        ans = [0] * len(seq)
+        bit = 0
+        for i, ch in enumerate(seq):
             if ch == '(':
-                depth += 1
-                ans.append(depth % 2)
+                bit ^= 1
+                ans[i] = bit
             else:
-                ans.append(depth % 2)
-                depth -= 1
-
+                ans[i] = bit
+                bit ^= 1
         return ans
